@@ -983,6 +983,9 @@
       if (!addStar) { msgEl.textContent = 'Bitte eine Sternebewertung wählen.'; msgEl.className = 'msg error'; return; }
       if (!addTri) { msgEl.textContent = 'Bitte einen Punkt im Dreieck setzen.'; msgEl.className = 'msg error'; return; }
 
+      const duplicate = words.find(w => w.word.toLowerCase() === val.toLowerCase());
+      if (duplicate) { msgEl.textContent = '"' + val + '" gibt es bereits.'; msgEl.className = 'msg error'; return; }
+
       const btn = document.getElementById('add-btn');
       btn.disabled = true;
       msgEl.innerHTML = '<span class="spinner"></span> Speichern…';
