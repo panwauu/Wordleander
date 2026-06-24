@@ -1,4 +1,4 @@
-# Wordlealex — Requirements
+# Wordleander — Requirements
 
 ## Overview
 A single-page web app where users collaboratively collect and vote on words using a star rating and a three-dimensional barycentric score.
