@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wordlealex</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --color-atzig: #f472b6;
+      --color-fotzig: #fbbf24;
+      --color-mausig: #a78bfa;
+      --bg-app: #0d0d1a;
+      --bg-card: #1a1a2e;
+      --bg-glass: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.15);
+      --text-primary: #f0f0ff;
+      --text-secondary: #a0a0c0;
+      --gradient-brand: linear-gradient(135deg, var(--color-mausig), var(--color-atzig), var(--color-fotzig));
+      --gradient-card: linear-gradient(135deg, #1a1a2e, #2a1f3d);
+      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
+      --radius-sm: 0.5rem;
+      --radius-md: 1rem;
+      --radius-lg: 1.5rem;
+      --radius-full: 99px;
+      --font: 'Outfit', system-ui, sans-serif;
+      --transition: 0.15s ease;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: var(--font);
+      background: var(--bg-app);
+      color: var(--text-primary);
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ── Modal overlay ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 5, 15, 0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .modal-card {
+      background: var(--gradient-card);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .modal-card h2 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      margin-bottom: 0.25rem;
+    }
+
+    .modal-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.25rem;
+      line-height: 1.6;
+      font-weight: 600;
+    }
+
+    /* ── Layout ── */
+    .shell {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 1rem 4rem;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 0 1.25rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .header-title {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.4px;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+
+    /* ── Nav bar ── */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 3px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 4px;
+      flex: 1;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 7px 8px;
+      border: none;
+      border-radius: var(--radius-full);
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+      white-space: nowrap;
+    }
+
+    .tab:hover { color: var(--text-primary); }
+
+    .tab.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    /* ── Pane header ── */
+    .pane-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .pane-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--gradient-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow-card);
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: .75rem;
+    }
+
+    /* ── Form ── */
+    input[type=text] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 600;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    input[type=text]::placeholder { color: var(--text-secondary); }
+
+    input[type=text]:focus {
+      border-color: rgba(244, 114, 182, 0.5);
+      box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.1);
+    }
+
+    button {
+      cursor: pointer;
+      font-family: var(--font);
+      border-radius: var(--radius-full);
+      transition: transform var(--transition), filter var(--transition), background var(--transition);
+    }
+
+    .btn-primary {
+      background: var(--color-atzig);
+      color: #0d0d1a;
+      border: none;
+      padding: 9px 20px;
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn-primary:active { transform: scale(.97); }
+    .btn-primary:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+    .btn-ghost {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      font-weight: 700;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .btn-ghost:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-1px); }
+
+    .btn-sm {
+      padding: 5px 14px;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-strong);
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+
+    .btn-sm:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-primary); }
+
+    /* ── Stars ── */
+    .stars {
+      display: flex;
+      gap: 4px;
+      margin: 6px 0;
+    }
+
+    .star {
+      font-size: 28px;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.12);
+      line-height: 1;
+      user-select: none;
+      transition: color .1s, transform .1s;
+    }
+
+    .star:hover { transform: scale(1.15); }
+    .star.lit { color: var(--color-fotzig); }
+
+    .star-hint {
+      font-size: 12px;
+      color: var(--text-secondary);
+      min-height: 16px;
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    /* ── Triangle ── */
+    canvas { display: block; border-radius: var(--radius-md); }
+
+    .tri-hint {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .tri-val {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      min-height: 16px;
+      font-weight: 600;
+    }
+
+    /* ── Word list ── */
+    .word-row { border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+    .word-row:last-child { border-bottom: none; }
+
+    .word-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      cursor: pointer;
+    }
+
+    .word-header:hover .word-name { color: var(--color-atzig); }
+
+    .word-name {
+      font-weight: 700;
+      font-size: 15px;
+      transition: color var(--transition);
+    }
+
+    .word-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .you-badge {
+      display: inline-block;
+      font-size: 11px;
+      background: rgba(244, 114, 182, 0.15);
+      color: var(--color-atzig);
+      border-radius: var(--radius-full);
+      padding: 1px 9px;
+      margin-top: 4px;
+      font-weight: 700;
+    }
+
+    .chevron {
+      font-size: 14px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      margin-top: 3px;
+      transition: transform .2s;
+    }
+
+    .chevron.open { transform: rotate(180deg); }
+
+    .ratings-panel {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius-sm);
+      padding: .6rem .9rem;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    .ratings-panel.open { display: block; }
+
+    .rating-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 13px;
+    }
+
+    .rating-entry:last-child { border-bottom: none; }
+    .rating-user { font-weight: 700; }
+
+    .rating-detail {
+      color: var(--text-secondary);
+      font-size: 12px;
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .empty {
+      font-size: 14px;
+      color: var(--text-secondary);
+      padding: 1.25rem 0;
+      font-weight: 600;
+    }
+
+    .msg {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      min-height: 18px;
+      font-weight: 600;
+    }
+
+    .msg.error { color: #f87171; }
+    .msg.ok { color: var(--color-mausig); }
+
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      border-top-color: var(--color-atzig);
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .section-gap { margin-top: 1.25rem; }
+  </style>
+</head>
+
+<body>
+
+  <!-- Loading screen -->
+  <div id="loading-screen" class="modal-overlay">
+    <div style="text-align:center;color:var(--text-secondary)">
+      <div class="spinner" style="width:28px;height:28px;border-width:3px;margin:0 auto 14px;display:block"></div>
+      <div style="font-size:14px;font-weight:700">Verbinde…</div>
+    </div>
+  </div>
+
+  <!-- Name prompt modal -->
+  <div id="name-modal" class="modal-overlay" style="display:none">
+    <div class="modal-card">
+      <h2>Wie heißt du?</h2>
+      <p>Gib deinen Namen ein, um Wörter hinzuzufügen oder zu bewerten.</p>
+      <input type="text" id="name-prompt-input" placeholder="Dein Name…" autocomplete="off" />
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn-primary" onclick="confirmName()">Los →</button>
+        <button class="btn-ghost" onclick="cancelNamePrompt()">Abbrechen</button>
+      </div>
+      <div class="msg" id="name-prompt-msg"></div>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div id="app">
+    <div class="shell">
+      <header>
+        <span class="header-title">Wordlealex</span>
+        <div class="user-chip" id="user-chip" style="display:none">
+          <span id="user-label"></span>
+          <button class="btn-ghost" onclick="doLogout()" style="font-size:12px;padding:5px 12px">Abmelden</button>
+        </div>
+      </header>
+
+      <!-- Nav bar -->
+      <div class="nav-bar">
+        <div class="tabs">
+          <button class="tab active" onclick="showTab('viz')" id="tab-btn-viz">Dreieck</button>
+          <button class="tab" onclick="showTab('list')" id="tab-btn-list">Alle Wörter</button>
+        </div>
+        <button class="btn-primary" onclick="requireName(openAdd)">+ Wort</button>
+        <button class="btn-ghost" onclick="requireName(openRate)">Bewerten</button>
+      </div>
+
+      <!-- VIZ -->
+      <div id="pane-viz">
+        <div class="card">
+          <div class="card-label">Durchschnitt aller Bewertungen</div>
+          <div class="tri-hint">Jeder Punkt ist ein Wort — hover für Details.</div>
+          <canvas id="tri-viz" width="440" height="380" style="width:100%"></canvas>
+          <div class="tri-val" id="viz-hover"></div>
+        </div>
+      </div>
+
+      <!-- LIST -->
+      <div id="pane-list" style="display:none">
+        <div class="card">
+          <div class="card-label">Alle Wörter</div>
+          <div id="all-list">
+            <div class="empty"><span class="spinner"></span> Lade…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD -->
+      <div id="pane-add" style="display:none">
+        <div class="pane-header">
+          <button class="btn-ghost" onclick="showTab(prevTab)" style="font-size:12px;padding:5px 12px">← Zurück</button>
+          <span class="pane-title">Neues Wort</span>
+        </div>
+        <div class="card">
+          <input type="text" id="new-word" placeholder="Wort eingeben…" autocomplete="off" />
+
+          <div class="section-gap">
+            <div class="card-label">Allgemeine Bewertung</div>
+            <div class="stars" id="add-stars">
+              <span class="star" data-v="1">★</span><span class="star" data-v="2">★</span>
+              <span class="star" data-v="3">★</span><span class="star" data-v="4">★</span>
+              <span class="star" data-v="5">★</span>
+            </div>
+            <div class="star-hint" id="add-star-hint">Noch keine Bewertung</div>
+          </div>
+
+          <div class="section-gap">
+            <div class="card-label">Dimensionen</div>
+            <div class="tri-hint">Klicke ins Dreieck für atzig / fotzig / mausig.</div>
+            <canvas id="tri-add" width="440" height="360" style="width:100%;cursor:crosshair"></canvas>
+            <div class="tri-val" id="add-tri-val">Noch kein Punkt gesetzt</div>
+          </div>
+
+          <div style="margin-top:14px">
+            <button class="btn-primary" id="add-btn" onclick="submitAdd()">Wort hinzufügen</button>
+          </div>
+          <div class="msg" id="add-msg"></div>
+        </div>
+      </div>
+
+      <!-- RATE -->
+      <div id="pane-rate" style="display:none">
+        <div class="pane-header">
+          <button class="btn-ghost" onclick="showTab(prevTab)" style="font-size:12px;padding:5px 12px">← Zurück</button>
+          <span class="pane-title">Bewerten</span>
+        </div>
+        <div class="card">
+          <div class="card-label">Wörter bewerten</div>
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;font-weight:600">Du kannst jedes Wort einmal bewerten. Eigene Wörter sind ausgeschlossen.</p>
+          <div id="rate-list">
+            <div class="empty"><span class="spinner"></span> Lade…</div>
+          </div>
+        </div>
+
+        <div id="rate-modal" style="display:none">
+          <div class="card" style="border-color:rgba(244,114,182,0.3);box-shadow:0 0 30px rgba(244,114,182,0.08)">
+            <div class="card-label" id="modal-title"></div>
+
+            <div class="card-label" style="margin-top:8px">Allgemeine Bewertung</div>
+            <div class="stars" id="modal-stars">
+              <span class="star" data-v="1">★</span><span class="star" data-v="2">★</span>
+              <span class="star" data-v="3">★</span><span class="star" data-v="4">★</span>
+              <span class="star" data-v="5">★</span>
+            </div>
+            <div class="star-hint" id="modal-star-hint">Noch keine Bewertung</div>
+
+            <div class="section-gap">
+              <div class="card-label">Dimensionen</div>
+              <div class="tri-hint">Klicke ins Dreieck.</div>
+              <canvas id="tri-modal" width="440" height="320" style="width:100%;cursor:crosshair"></canvas>
+              <div class="tri-val" id="modal-tri-val">Noch kein Punkt gesetzt</div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:14px">
+              <button class="btn-primary" onclick="submitRating()">Abschicken</button>
+              <button class="btn-ghost" onclick="closeModal()">Abbrechen</button>
+            </div>
+            <div class="msg" id="modal-msg"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://jfeakqooteydxpinslvk.supabase.co';
+    const LS_NAME_KEY = 'wordlealex_name';
+
+    /* ── Key from URL ── */
+    const params = new URLSearchParams(location.search);
+    const SUPABASE_KEY = params.get('key');
+
+    function errorScreen(title, detail) {
+      document.body.innerHTML = `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Outfit',system-ui,sans-serif;background:#0d0d1a;color:#f0f0ff"><div style="text-align:center;padding:2rem;max-width:420px"><div style="font-size:52px;margin-bottom:16px">🔒</div><div style="font-size:20px;font-weight:900;margin-bottom:8px">${title}</div><div style="font-size:13px;color:#a0a0c0;font-weight:600;word-break:break-word;line-height:1.6">${detail}</div></div></div>`;
+    }
+
+    if (!SUPABASE_KEY) {
+      errorScreen('Kein Schlüssel', 'Füge <code style="background:rgba(255,255,255,0.1);padding:1px 6px;border-radius:4px">?key=…</code> zur URL hinzu.');
+      throw new Error('No key provided');
+    }
+
+    /* ── Supabase ── */
+    async function sb(path, opts = {}) {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': opts.prefer || 'return=representation',
+          ...opts.headers
+        },
+        method: opts.method || 'GET',
+        body: opts.body ? JSON.stringify(opts.body) : undefined
+      });
+      if (!res.ok) { const t = await res.text(); throw new Error(t); }
+      if (res.status === 204) return null;
+      return res.json();
+    }
+
+    /* ── State ── */
+    let currentUser = localStorage.getItem(LS_NAME_KEY) || '';
+    let prevTab = 'viz';
+    let currentPane = 'viz';
+    let nameModalCallback = null;
+    let words = [], ratings = [];
+    let addStar = 0, addTri = null;
+    let modalStar = 0, modalTri = null, modalWordId = null;
+
+    /* ── Init ── */
+    document.addEventListener('DOMContentLoaded', async () => {
+      updateUserChip();
+      showTab('viz');
+      try {
+        await loadAll();
+        document.getElementById('loading-screen').style.display = 'none';
+        if (currentPane === 'viz') drawTri(document.getElementById('tri-viz'), null, getAvgDots());
+        else if (currentPane === 'list') renderAllList();
+      } catch (e) {
+        errorScreen('Verbindung fehlgeschlagen', 'Schlüssel ungültig oder Supabase nicht erreichbar.<br><br><code style="font-size:11px;color:#a0a0c0">' + e.message + '</code>');
+      }
+    });
+
+    /* ── Name / user ── */
+    function updateUserChip() {
+      const chip = document.getElementById('user-chip');
+      if (currentUser) {
+        document.getElementById('user-label').textContent = currentUser;
+        chip.style.display = '';
+      } else {
+        chip.style.display = 'none';
+      }
+    }
+
+    function requireName(callback) {
+      if (currentUser) { callback(); return; }
+      nameModalCallback = callback;
+      document.getElementById('name-prompt-input').value = '';
+      document.getElementById('name-prompt-msg').textContent = '';
+      document.getElementById('name-modal').style.display = 'flex';
+      setTimeout(() => document.getElementById('name-prompt-input').focus(), 50);
+    }
+
+    function promptName(callback) {
+      nameModalCallback = callback || null;
+      document.getElementById('name-prompt-input').value = currentUser;
+      document.getElementById('name-prompt-msg').textContent = '';
+      document.getElementById('name-modal').style.display = 'flex';
+      setTimeout(() => document.getElementById('name-prompt-input').focus(), 50);
+    }
+
+    function confirmName() {
+      const n = document.getElementById('name-prompt-input').value.trim();
+      if (!n) {
+        const msg = document.getElementById('name-prompt-msg');
+        msg.textContent = 'Bitte einen Namen eingeben.';
+        msg.className = 'msg error';
+        return;
+      }
+      currentUser = n;
+      localStorage.setItem(LS_NAME_KEY, n);
+      updateUserChip();
+      document.getElementById('name-modal').style.display = 'none';
+      if (nameModalCallback) { const cb = nameModalCallback; nameModalCallback = null; cb(); }
+    }
+
+    function cancelNamePrompt() {
+      document.getElementById('name-modal').style.display = 'none';
+      nameModalCallback = null;
+    }
+
+    function doLogout() {
+      currentUser = '';
+      localStorage.removeItem(LS_NAME_KEY);
+      updateUserChip();
+    }
+
+    document.getElementById('name-prompt-input').addEventListener('keydown', e => { if (e.key === 'Enter') confirmName(); });
+
+    /* ── Data ── */
+    async function loadAll() {
+      const [w, r] = await Promise.all([
+        sb('words?select=*&order=created_at.asc'),
+        sb('ratings?select=*')
+      ]);
+      words = w || [];
+      ratings = r || [];
+    }
+
+    /* ── Tabs ── */
+    function showTab(t) {
+      if (t === 'viz' || t === 'list') prevTab = t;
+      currentPane = t;
+      ['add', 'rate', 'list', 'viz'].forEach(id => {
+        document.getElementById('pane-' + id).style.display = id === t ? '' : 'none';
+        const btn = document.getElementById('tab-btn-' + id);
+        if (btn) btn.classList.toggle('active', id === t);
+      });
+      document.getElementById('rate-modal').style.display = 'none';
+      if (t === 'rate') renderRateList();
+      if (t === 'list') renderAllList();
+      if (t === 'viz') setTimeout(() => drawTri(document.getElementById('tri-viz'), null, getAvgDots()), 50);
+      if (t === 'add') setTimeout(() => drawTri(document.getElementById('tri-add'), addTri, null), 50);
+    }
+
+    function openAdd() { showTab('add'); }
+    function openRate() { showTab('rate'); }
+
+    /* ── Triangle math ── */
+    function triCorners(w, h) {
+      const p = 48;
+      return [[w / 2, p], [w - p, h - p], [p, h - p]];
+    }
+    function baryToXY(a, b, c, co) {
+      return [
+        a * co[0][0] + b * co[1][0] + c * co[2][0],
+        a * co[0][1] + b * co[1][1] + c * co[2][1]
+      ];
+    }
+    function xyToBary(x, y, co) {
+      const [ax, ay] = co[0], [bx, by] = co[1], [cx, cy] = co[2];
+      const d = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy);
+      const a = ((by - cy) * (x - cx) + (cx - bx) * (y - cy)) / d;
+      const b = ((cy - ay) * (x - cx) + (ax - cx) * (y - cy)) / d;
+      return [a, b, 1 - a - b];
+    }
+    function insideTri(x, y, co) {
+      const [a, b, c] = xyToBary(x, y, co);
+      return a >= 0 && b >= 0 && c >= 0;
+    }
+    function normTri(a, b, c) {
+      const s = a + b + c;
+      return [a / s, b / s, c / s];
+    }
+
+    /* corner colors: [0]=atzig(pink), [1]=fotzig(amber), [2]=mausig(purple) */
+    const CORNER_RGB = [[244, 114, 182], [251, 191, 36], [167, 139, 250]];
+
+    function blendColor(t) {
+      const r = Math.round(t[0] * CORNER_RGB[0][0] + t[1] * CORNER_RGB[1][0] + t[2] * CORNER_RGB[2][0]);
+      const g = Math.round(t[0] * CORNER_RGB[0][1] + t[1] * CORNER_RGB[1][1] + t[2] * CORNER_RGB[2][1]);
+      const b = Math.round(t[0] * CORNER_RGB[0][2] + t[1] * CORNER_RGB[1][2] + t[2] * CORNER_RGB[2][2]);
+      return `rgb(${r},${g},${b})`;
+    }
+
+    /* ── Draw triangle ── */
+    function drawTri(cvs, dot, dots) {
+      const ctx = cvs.getContext('2d');
+      const w = cvs.width, h = cvs.height;
+      const co = triCorners(w, h);
+
+      ctx.clearRect(0, 0, w, h);
+
+      /* clipped fill: dark base + per-corner radial glows */
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(co[0][0], co[0][1]);
+      ctx.lineTo(co[1][0], co[1][1]);
+      ctx.lineTo(co[2][0], co[2][1]);
+      ctx.closePath();
+      ctx.clip();
+
+      ctx.fillStyle = '#1a1230';
+      ctx.fillRect(0, 0, w, h);
+
+      const glowR = Math.max(w, h) * 0.9;
+      co.forEach((corner, i) => {
+        const [cr, cg, cb] = CORNER_RGB[i];
+        const g = ctx.createRadialGradient(corner[0], corner[1], 0, corner[0], corner[1], glowR);
+        g.addColorStop(0, `rgba(${cr},${cg},${cb},0.55)`);
+        g.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+      });
+
+      ctx.restore();
+
+      /* border */
+      ctx.beginPath();
+      ctx.moveTo(co[0][0], co[0][1]);
+      ctx.lineTo(co[1][0], co[1][1]);
+      ctx.lineTo(co[2][0], co[2][1]);
+      ctx.closePath();
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      /* labels */
+      ctx.font = '700 13px Outfit, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      [
+        [co[0], 'Atzig', CORNER_RGB[0], -14],
+        [co[1], 'Fotzig', CORNER_RGB[1], 20],
+        [co[2], 'Mausig', CORNER_RGB[2], 20],
+      ].forEach(([c, label, [lr, lg, lb], dy], i) => {
+        ctx.fillStyle = `rgba(${lr},${lg},${lb},0.95)`;
+        const ox = i === 1 ? 18 : i === 2 ? -18 : 0;
+        ctx.fillText(label, c[0] + ox, c[1] + dy);
+      });
+
+      /* viz dots */
+      if (dots) {
+        dots.forEach(d => {
+          const [px, py] = baryToXY(d.t[0], d.t[1], d.t[2], co);
+          ctx.beginPath();
+          ctx.arc(px, py, 8, 0, Math.PI * 2);
+          ctx.fillStyle = blendColor(d.t);
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(255,255,255,0.85)';
+          ctx.font = '600 11px Outfit, system-ui, sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText(d.label, px + 12, py + 4);
+        });
+      }
+
+      /* selected dot (add / rate) */
+      if (dot) {
+        const [px, py] = baryToXY(dot[0], dot[1], dot[2], co);
+        ctx.shadowColor = blendColor(dot);
+        ctx.shadowBlur = 16;
+        ctx.beginPath();
+        ctx.arc(px, py, 10, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = blendColor(dot);
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+      }
+    }
+
+    function handleTriClick(cvs, e, onSet, valId) {
+      const rect = cvs.getBoundingClientRect();
+      const sx = cvs.width / rect.width, sy = cvs.height / rect.height;
+      const x = (e.clientX - rect.left) * sx;
+      const y = (e.clientY - rect.top) * sy;
+      const co = triCorners(cvs.width, cvs.height);
+      if (!insideTri(x, y, co)) return;
+      let [a, b, c] = xyToBary(x, y, co);
+      const t = normTri(Math.max(0, a), Math.max(0, b), Math.max(0, c));
+      onSet(t);
+      document.getElementById(valId).textContent =
+        'Atzig ' + (t[0] * 100).toFixed(0) + '% · Fotzig ' + (t[1] * 100).toFixed(0) + '% · Mausig ' + (t[2] * 100).toFixed(0) + '%';
+    }
+
+    document.getElementById('tri-add').addEventListener('click', e =>
+      handleTriClick(document.getElementById('tri-add'), e,
+        t => { addTri = t; drawTri(document.getElementById('tri-add'), t, null); }, 'add-tri-val'));
+
+    document.getElementById('tri-modal').addEventListener('click', e =>
+      handleTriClick(document.getElementById('tri-modal'), e,
+        t => { modalTri = t; drawTri(document.getElementById('tri-modal'), t, null); }, 'modal-tri-val'));
+
+    document.getElementById('tri-viz').addEventListener('mousemove', e => {
+      const cvs = document.getElementById('tri-viz');
+      const rect = cvs.getBoundingClientRect();
+      const sx = cvs.width / rect.width, sy = cvs.height / rect.height;
+      const mx = (e.clientX - rect.left) * sx, my = (e.clientY - rect.top) * sy;
+      const co = triCorners(cvs.width, cvs.height);
+      const dots = getAvgDots();
+      let found = null;
+      dots.forEach(d => {
+        const [px, py] = baryToXY(d.t[0], d.t[1], d.t[2], co);
+        if (Math.hypot(mx - px, my - py) < 16) found = d;
+      });
+      document.getElementById('viz-hover').textContent = found
+        ? found.label + ' — ★ ' + found.stars.toFixed(1) + ' · Atzig ' + (found.t[0] * 100).toFixed(0) + '% · Fotzig ' + (found.t[1] * 100).toFixed(0) + '% · Mausig ' + (found.t[2] * 100).toFixed(0) + '%'
+        : '';
+    });
+
+    /* ── Stars ── */
+    function setupStars(containerId, hintId, onSet) {
+      const el = document.getElementById(containerId);
+      let cur = 0;
+      el.querySelectorAll('.star').forEach(s => {
+        s.addEventListener('click', () => {
+          cur = parseInt(s.dataset.v);
+          onSet(cur);
+          el.querySelectorAll('.star').forEach(x => x.classList.toggle('lit', parseInt(x.dataset.v) <= cur));
+          document.getElementById(hintId).textContent = cur + ' von 5 Sternen';
+        });
+        s.addEventListener('mouseover', () =>
+          el.querySelectorAll('.star').forEach(x => x.classList.toggle('lit', parseInt(x.dataset.v) <= parseInt(s.dataset.v))));
+        s.addEventListener('mouseout', () =>
+          el.querySelectorAll('.star').forEach(x => x.classList.toggle('lit', parseInt(x.dataset.v) <= cur)));
+      });
+      return () => {
+        cur = 0;
+        el.querySelectorAll('.star').forEach(x => x.classList.remove('lit'));
+        document.getElementById(hintId).textContent = 'Noch keine Bewertung';
+      };
+    }
+    let resetAddStars = setupStars('add-stars', 'add-star-hint', v => { addStar = v; });
+    let resetModalStars = setupStars('modal-stars', 'modal-star-hint', v => { modalStar = v; });
+
+    /* ── Add word ── */
+    async function submitAdd() {
+      const msgEl = document.getElementById('add-msg');
+      msgEl.className = 'msg';
+      const val = document.getElementById('new-word').value.trim();
+      if (!val) { msgEl.textContent = 'Bitte ein Wort eingeben.'; msgEl.className = 'msg error'; return; }
+      if (!addStar) { msgEl.textContent = 'Bitte eine Sternebewertung wählen.'; msgEl.className = 'msg error'; return; }
+      if (!addTri) { msgEl.textContent = 'Bitte einen Punkt im Dreieck setzen.'; msgEl.className = 'msg error'; return; }
+
+      const btn = document.getElementById('add-btn');
+      btn.disabled = true;
+      msgEl.innerHTML = '<span class="spinner"></span> Speichern…';
+
+      try {
+        const id = 'w' + Date.now() + Math.random().toString(36).slice(2, 6);
+        const [newWord] = await sb('words', { method: 'POST', body: { id, word: val, added_by: currentUser } });
+        await sb('ratings', {
+          method: 'POST',
+          body: { word_id: id, username: currentUser, stars: addStar, atzig: addTri[0], fotzig: addTri[1], mausig: addTri[2] }
+        });
+        words.push(newWord);
+        ratings.push({ word_id: id, username: currentUser, stars: addStar, atzig: addTri[0], fotzig: addTri[1], mausig: addTri[2] });
+
+        document.getElementById('new-word').value = '';
+        addStar = 0; addTri = null;
+        resetAddStars();
+        document.getElementById('add-tri-val').textContent = 'Noch kein Punkt gesetzt';
+        drawTri(document.getElementById('tri-add'), null, null);
+        msgEl.textContent = '✓ "' + val + '" hinzugefügt!';
+        msgEl.className = 'msg ok';
+        setTimeout(() => { msgEl.textContent = ''; }, 2500);
+      } catch (e) {
+        msgEl.textContent = 'Fehler: ' + e.message;
+        msgEl.className = 'msg error';
+      }
+      btn.disabled = false;
+    }
+
+    /* ── Rate list ── */
+    function userRated(wordId) { return ratings.some(r => r.word_id === wordId && r.username === currentUser); }
+
+    function renderRateList() {
+      const el = document.getElementById('rate-list');
+      const ratable = words.filter(w => w.added_by !== currentUser && !userRated(w.id));
+      if (!ratable.length) {
+        el.innerHTML = '<div class="empty">Nichts mehr zu bewerten — du hast alles bewertet!</div>';
+        return;
+      }
+      el.innerHTML = ratable.map(w => {
+        const cnt = ratings.filter(r => r.word_id === w.id).length;
+        return `<div class="word-row">
+          <div class="word-header" style="cursor:default">
+            <div>
+              <div class="word-name">${w.word}</div>
+              <div class="word-desc">${cnt} Bewertung${cnt !== 1 ? 'en' : ''}</div>
+            </div>
+            <button class="btn-sm" onclick="openModal('${w.id}')">Bewerten</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    /* ── Rating modal ── */
+    function openModal(wordId) {
+      modalWordId = wordId;
+      modalStar = 0; modalTri = null;
+      resetModalStars();
+      document.getElementById('modal-tri-val').textContent = 'Noch kein Punkt gesetzt';
+      document.getElementById('modal-msg').textContent = '';
+      const w = words.find(x => x.id === wordId);
+      document.getElementById('modal-title').textContent = 'Bewertung: ' + w.word;
+      document.getElementById('rate-modal').style.display = '';
+      setTimeout(() => drawTri(document.getElementById('tri-modal'), null, null), 50);
+      document.getElementById('rate-modal').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function closeModal() {
+      document.getElementById('rate-modal').style.display = 'none';
+      modalWordId = null;
+    }
+
+    async function submitRating() {
+      const msgEl = document.getElementById('modal-msg');
+      msgEl.className = 'msg';
+      if (!modalStar) { msgEl.textContent = 'Bitte eine Sternebewertung wählen.'; msgEl.className = 'msg error'; return; }
+      if (!modalTri) { msgEl.textContent = 'Bitte einen Punkt im Dreieck setzen.'; msgEl.className = 'msg error'; return; }
+      msgEl.innerHTML = '<span class="spinner"></span> Speichern…';
+      try {
+        await sb('ratings', {
+          method: 'POST',
+          body: { word_id: modalWordId, username: currentUser, stars: modalStar, atzig: modalTri[0], fotzig: modalTri[1], mausig: modalTri[2] }
+        });
+        ratings.push({ word_id: modalWordId, username: currentUser, stars: modalStar, atzig: modalTri[0], fotzig: modalTri[1], mausig: modalTri[2] });
+        closeModal();
+        renderRateList();
+      } catch (e) {
+        msgEl.textContent = 'Fehler: ' + e.message;
+        msgEl.className = 'msg error';
+      }
+    }
+
+    /* ── All words list ── */
+    function getWordStats(wordId) {
+      const rs = ratings.filter(r => r.word_id === wordId);
+      if (!rs.length) return null;
+      const avgS = rs.reduce((a, r) => a + r.stars, 0) / rs.length;
+      const at = rs.reduce((a, r) => a + r.atzig, 0) / rs.length;
+      const ft = rs.reduce((a, r) => a + r.fotzig, 0) / rs.length;
+      const mt = rs.reduce((a, r) => a + r.mausig, 0) / rs.length;
+      const s = at + ft + mt;
+      return { avgS, at: at / s, ft: ft / s, mt: mt / s, count: rs.length };
+    }
+
+    function renderAllList() {
+      const el = document.getElementById('all-list');
+      if (!words.length) { el.innerHTML = '<div class="empty">Noch keine Wörter. Füge das erste hinzu!</div>'; return; }
+      el.innerHTML = words.map(w => {
+        const st = getWordStats(w.id);
+        const avgS = st ? st.avgS.toFixed(1) : '—';
+        const triStr = st
+          ? (st.at * 100).toFixed(0) + '% atzig, ' + (st.ft * 100).toFixed(0) + '% fotzig, ' + (st.mt * 100).toFixed(0) + '% mausig'
+          : '—';
+        const cnt = st ? st.count : 0;
+        const rated = userRated(w.id);
+        const isOwn = w.added_by === currentUser;
+        const rs = ratings.filter(r => r.word_id === w.id);
+        const entries = rs.map(r => `
+          <div class="rating-entry">
+            <span class="rating-user">${r.username}</span>
+            <span class="rating-detail">★ ${r.stars} · ${(r.atzig * 100).toFixed(0)}% atzig, ${(r.fotzig * 100).toFixed(0)}% fotzig, ${(r.mausig * 100).toFixed(0)}% mausig</span>
+          </div>`).join('');
+        return `<div class="word-row" id="row-${w.id}">
+          <div class="word-header" onclick="toggleRow('${w.id}')">
+            <div style="flex:1;min-width:0">
+              <div class="word-name">${w.word}</div>
+              <div class="word-desc">von ${w.added_by} · ${cnt} Bewertung${cnt !== 1 ? 'en' : ''} · ★ ${avgS} · ${triStr}</div>
+              ${rated || isOwn ? '<span class="you-badge">' + (isOwn ? 'von dir' : '✓ bewertet') + '</span>' : ''}
+            </div>
+            <span class="chevron" id="chev-${w.id}">▾</span>
+          </div>
+          <div class="ratings-panel" id="panel-${w.id}">
+            ${rs.length ? entries : '<div style="font-size:13px;color:var(--text-secondary);font-weight:600">Noch keine Bewertungen.</div>'}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function toggleRow(wid) {
+      const panel = document.getElementById('panel-' + wid);
+      const chev = document.getElementById('chev-' + wid);
+      const open = panel.classList.toggle('open');
+      chev.classList.toggle('open', open);
+    }
+
+    /* ── Viz dots ── */
+    function getAvgDots() {
+      return words.map(w => {
+        const st = getWordStats(w.id);
+        if (!st) return null;
+        return { label: w.word, stars: st.avgS, t: [st.at, st.ft, st.mt] };
+      }).filter(Boolean);
+    }
+  </script>
+</body>
+
+</html>
